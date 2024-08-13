@@ -1,1 +1,2 @@
-# cocode
+# easy-hiring
+Resumes' Chatbot
