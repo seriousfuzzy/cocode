@@ -35,10 +35,22 @@ def analyze_resumes(model, resumes_text, job_description):
     return response.content
 
 def generate_questions(model, resume, job_description):
-    # Generate tailored questions for interview based on resume and job description
     prompt = f"""
-    Based on the following resume and job description, generate 3 tailored questions to ask the candidate during an interview.
-    The questions should be specific to the candidate's experience and the job requirements.
+    Based on the following resume and job description, generate 6 tailored questions to ask the candidate during an interview.
+
+    The first 3 questions MUST:
+    - Be based solely on the candidate's resume/CV
+    - Be highly relevant to the specific requirements and skills mentioned in the job description
+    - Relate directly to the candidate's experience, projects, and skills as described in their resume
+
+    The next 3 questions MUST:
+    - Be based directly on the job description
+    - Test the candidate's critical thinking abilities in the context of the job role
+    - Evaluate the candidate's practical skillset as it applies to the job requirements
+
+    ALL questions should:
+    - Be straightforward and concise
+    - Not include any explanations or additional context
 
     Resume:
     {resume}
@@ -46,10 +58,13 @@ def generate_questions(model, resume, job_description):
     Job Description:
     {job_description}
 
-    Format your response as a numbered list of questions:
-    1. [Question 1]
-    2. [Question 2]
-    3. [Question 3]
+    Format your response as a numbered list of 6 questions, and nothing else:
+    1. [CV-based Question 1]
+    2. [CV-based Question 2]
+    3. [CV-based Question 3]
+    4. [Job Description-based Question 1]
+    5. [Job Description-based Question 2]
+    6. [Job Description-based Question 3]
     """
 
     response = model.invoke(prompt)
