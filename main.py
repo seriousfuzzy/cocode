@@ -1,7 +1,7 @@
 import streamlit as st
 from datetime import datetime
 from modules.ai_models import init_chat_model, analyze_resumes, generate_questions
-from modules.database import init_db, add_candidate, get_latest_candidates
+from modules.database import init_db, add_candidate as db_add_candidate, get_latest_candidates
 from modules.resume import process_pdf, create_vector_store
 from modules.tempfile_util import clean_temp_files
 import os
@@ -115,29 +115,44 @@ def questions_for_candidate():
                 "Please provide both the job description and candidate's resume.")
 
 
-def add_candidate():
+def add_candidate_page():
     st.title("Add Candidate")
+    
     candidate_name = st.text_input("Candidate Name")
     candidate_email = st.text_input("Candidate Email")
     job_applied = st.text_input("Job Applied For")
-    relevance_score = st.number_input(
-        "Relevance Score (0-100)", min_value=0, max_value=100)
-    resume_filename = st.text_input("Resume Filename")
+    relevance_score = st.number_input("Relevance Score (0-100)", min_value=0, max_value=100)
+    
+    # File uploader for PDF
+    resume_file = st.file_uploader("Upload Resume (PDF)", type="pdf")
 
     if st.button("Add Candidate"):
-        if candidate_name and candidate_email and job_applied and resume_filename:
-            add_candidate(conn, candidate_name, candidate_email,
-                          resume_filename, job_applied, relevance_score, datetime.now())
-            st.success("Candidate added to database successfully!")
+        if candidate_name and candidate_email and job_applied and resume_file:
+            # Create a directory to store resumes if it doesn't exist
+            resume_dir = "resumes"
+            os.makedirs(resume_dir, exist_ok=True)
+            
+            # Generate a unique filename
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            resume_filename = f"{resume_dir}/{candidate_name}_{timestamp}.pdf"
+            
+            # Save the PDF file
+            with open(resume_filename, "wb") as f:
+                f.write(resume_file.getbuffer())
+            
+            # Add candidate to database
+            db_add_candidate(conn, candidate_name, candidate_email,
+                             job_applied, resume_filename, relevance_score, datetime.now())
+            
+            st.success(f"Candidate added to database successfully! Resume saved as {resume_filename}")
         else:
-            st.error("Please fill in all fields.")
+            st.error("Please fill in all fields and upload a resume.")
 
     st.subheader("Recent Candidates")
     candidates = get_latest_candidates(conn, limit=10)
     for candidate in candidates:
         st.write(
-            f"Name: {candidate[1]}, Email: {candidate[2]}, Job Applied: {candidate[4]}, Relevance Score: {candidate[5]}")
-
+            f"Name: {candidate[1]}, Email: {candidate[2]}, Resume: {candidate[4]}, Job Applied: {candidate[3]}, Relevance Score: {candidate[5]}")
 
 def main():
     st.sidebar.title("Navigation")
@@ -151,7 +166,7 @@ def main():
     elif selection == "Questions for the Candidate":
         questions_for_candidate()
     elif selection == "Add Candidate":
-        add_candidate()
+        add_candidate_page()
 
 
 if __name__ == "__main__":
