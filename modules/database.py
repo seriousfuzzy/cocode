@@ -7,6 +7,7 @@ from datetime import datetime
 def init_db():
     conn = sqlite3.connect('candidates.db')
     c = conn.cursor()
+    # c.execute('''DROP TABLE IF EXISTS candidates''') # Uncomment and run once after every schema changes!
     c.execute('''CREATE TABLE IF NOT EXISTS candidates
                  (id INTEGER PRIMARY KEY AUTOINCREMENT,
                   name TEXT,
