@@ -168,7 +168,6 @@ def main():
     elif selection == "Add Candidate":
         add_candidate_page()
 
-
 if __name__ == "__main__":
     main()
 
