@@ -45,19 +45,19 @@ Upload PDF resumes and enter the job description to start analyzing.
 
 ## Screenshots
 
-### Resume Score
+### Resume Ranker
 <p align='center'>
-  <img src='screenshots/resume_score.png' alt='Resume Score'/>
+  <img src='screenshots/resume-ranker.png' width="50%" alt='Resume Score'/>
 </p>
 
 ### Interview Questions
 <p align='center'>
-  <img src='screenshots/interview_qs.png' alt='Interview Qs'/>
+  <img src='screenshots/qs.png' width="50%" alt='Interview Qs'/>
 </p>
 
 ### Adding Candidate to DB
 <p align='center'>
-  <img src='screenshots/db.png' alt='DB'/>
+  <img src='screenshots/add-candidate.png' width="50%" alt='DB'/>
 </p>
 
 ## Contributing
